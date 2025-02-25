@@ -46,7 +46,7 @@ int main() {
     // Init connection
     ollama::setServerURL(ollamaServer);
     // Test prompt
-    cout << ollama::generate(model, "HELLo.") << endl;
+    // cout << ollama::generate(model, "HELLo.") << endl;
 
     // Prompts
     string output;
@@ -67,13 +67,3 @@ int main() {
     socket.stop();
     return 0;
 }
-
-// while (true) {
-
-//
-//     ollama::response context = ollama::generate(model, prompt);
-//
-//     getline(cin, prompt);
-//     ollama::response response = ollama::generate(model, prompt, context);
-//     cout << response;
-// }

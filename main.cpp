@@ -56,14 +56,10 @@ int main() {
     ollama::setServerURL(ollamaServer);
     ollama::setReadTimeout(240);
     ollama::setWriteTimeout(240);
-    
+
     // OLLAMA BOT!
     socket.setOnMessageCallback(
         [botService, botDebugMsg, model, password, username, &socket, basePrompt](const ix::WebSocketMessagePtr &msg) {
-            // Initialize context
-            ollama::response initial = ollama::generate(model, basePrompt);
-
-
             if (botService && msg->type == ix::WebSocketMessageType::Message) {
                 //* Generate responses */
                 string chatPrompt;

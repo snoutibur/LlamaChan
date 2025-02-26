@@ -10,7 +10,7 @@ bool strToBool(const std::string& str) {
 }
 
 int main(int argc, char* argv[]) {
-    // Setting woorking dir
+    //* Setting workspace dir *//
     std::filesystem::path exePath = std::filesystem::canonical(argv[0]).parent_path();
     std::filesystem::current_path(exePath);
     std::cout << "Working directory set to: " << std::filesystem::current_path() << std::endl;
@@ -193,7 +193,7 @@ int main(int argc, char* argv[]) {
             // Bot settings
             cout << "Bot status: " << botService << " <> Debug messages: " << botDebugMsg << endl;
 
-            // ! Disabled for now. Updated variables are ignored for some reason.
+            // Live config no worky!
             // cout << "0 Disable | 1 Enable | 3 Disable debug messages | 4: Enable debug messages di\n>";
             // cin >> userInput;
             // if (userInput == "1") {
@@ -205,15 +205,16 @@ int main(int argc, char* argv[]) {
             // } else if (userInput == "4") {
             //     botDebugMsg = true;
             // }
+
         } else if (userInput == "console") {
             // Ollama query w/ output sent in the chat
             while (true) {
                 cout << "Ollama prompt:" << endl;
-                getline(cin, prompt);
-                if (prompt == ":q!") {
+                getline(cin, userInput);
+                if (userInput == ":q!") {
                     break;
                 }
-
+                prompt = basePrompt + userInput;
                 try {
                     output = ollama::generate(model, prompt);
                     packet = "USER_MESSAGE," + username + "," + password + "," + output;

@@ -11,14 +11,14 @@ int main() {
     const string password = "LlamasAreSoCuteUWU";
 
     // Ollama //
-    const string ollamaServer = "137.190.231.120:11434";
-    const string model = "llama3.2:1b";
-    const string basePrompt = "Your name is " + username + ". You are to behave like a degenerate furry weeboo on a chat app. You're a bit of a troll, and also like reminding people you use Arch Linux btw. Despite that, you do have a loving side. Use excessive emoticons and kaomojis, ie :3, :o, :D. NO REGULAR EMOJIS. ";
+    const string ollamaServer = "10.0.0.242:11434";
+    const string model = "llama3.1:latest";
+    const string basePrompt = "Your name is " + username +
+                              ". You are to behave like a degenerate furry weeboo on a chat app. You're a bit of a troll, and also like reminding people you use Arch Linux btw. Despite that, you do have a loving side. Use excessive emoticons and kaomojis, ie :3, :o, :D. NO REGULAR EMOJIS. ";
 
     // BOT //
     bool botService = true;
     bool botDebugMsg = true;
-
 
 
     //* Vars: NO TOUCHY! *//
@@ -50,12 +50,12 @@ int main() {
 
     socket.start();
 
+
     //* OLLAMA *//
     // Init connection
     ollama::setServerURL(ollamaServer);
     ollama::setReadTimeout(240);
     ollama::setWriteTimeout(240);
-
     // OLLAMA BOT!
     socket.setOnMessageCallback(
         [botService, botDebugMsg, model, password, username, &socket, basePrompt](const ix::WebSocketMessagePtr &msg) {
@@ -68,15 +68,26 @@ int main() {
                 string part;
                 vector<string> parts;
 
-                // Filter messages to only respond to only commands
                 // Split the message into user and content.
                 if (botDebugMsg) {
                     // DEBUG
                     cout << endl << "Received message: " << msg->str << endl;
                 }
-
                 istringstream ss(msg->str);
-                while (getline(ss, part, ',')) {
+
+                // Split to first and 2nd comma
+                if (getline(ss, part, ',')) {
+                    parts.push_back(part);
+                } else {
+                    cout << "First token can't be read!" << endl;
+                }
+                if (getline(ss, part, ',')) {
+                    parts.push_back(part);
+                } else {
+                    cout << "Second token can't be read!" << endl;
+                }
+                // Adds the remaining parts, allowing input with commas.
+                if (getline(ss, part)) {
                     parts.push_back(part);
                 }
 
@@ -97,7 +108,8 @@ int main() {
 
                 try {
                     botReply = ollama::generate(model, chatPrompt);
-                    if (botDebugMsg) { // DEBUG
+                    if (botDebugMsg) {
+                        // DEBUG
                         cout << "Replying with: " << botReply << endl << endl;
                     }
                     toSend = "USER_MESSAGE," + username + "," + password + "," + botReply;

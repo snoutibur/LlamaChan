@@ -41,27 +41,44 @@ int main() {
     socket.start();
 
 
-
     //* OLLAMA *//
     // Init connection
     ollama::setServerURL(ollamaServer);
     // Test prompt
-    // cout << ollama::generate(model, "HELLo.") << endl;
+    cout << ollama::generate(model, "Hi!") << endl;
 
-    // Prompts
-    string output;
+    // Command system
+    string userInput;
+
+    // Commands
     while (true) {
-        cout << "Send msg: ";
-        getline(cin, prompt);
-        output = "USER_MESSAGE," + username + "," + password + "," + prompt;
-        cout << output << " >>" << endl << endl;
-        socket.send(output);
+        cout << ">";
+        getline(cin, userInput);
 
-        // Exit
-        if (prompt == ":q!") {
+        // q! to exit program
+        if (userInput == "q!") {
             break;
+        } else if (userInput == "olb") {
+            cout << "Serving Ollama model as bot";
+            // TODO: Implement bot
+        } else if (userInput == "olc") {
+
         }
     }
+
+
+    // string output;
+    // string ollamaOut;
+    // while (true) {
+    //
+    //
+    //     ollamaOut = ollama::generate(model, prompt);
+    //     output = "USER_MESSAGE," + username + "," + password + "," + ollamaOut;
+    //     cout << output << " >>" << endl << endl;
+    //     socket.send(output);
+    //
+    //
+    // }
 
     cout << "Quitting process..." << endl;
     socket.stop();

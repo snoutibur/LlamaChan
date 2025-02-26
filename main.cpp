@@ -11,10 +11,9 @@ int main() {
     const string password = "LlamasAreSoCuteUWU";
 
     // Ollama //
-    const string ollamaServer = "localhost:11434";
-    const string model = "llama3.1:latest";
-    const string basePrompt = "Your name is " + username +
-                              ". You are to behave like a degenerate furry weeboo on a chat app. You're a bit of a troll, and also like reminding people you use Arch Linux btw. Reply accordingly, and use excessive emoticons, ie :3, :o, :D, >:C. NO EMOJIS. ";
+    const string ollamaServer = "137.190.231.120:11434";
+    const string model = "llama3.2:1b";
+    const string basePrompt = "Your name is " + username + ". You are to behave like a degenerate furry weeboo on a chat app. You're a bit of a troll, and also like reminding people you use Arch Linux btw. Despite that, you do have a loving side. Use excessive emoticons and kaomojis, ie :3, :o, :D. NO REGULAR EMOJIS. ";
 
     // BOT //
     bool botService = true;
@@ -97,10 +96,10 @@ int main() {
                 }
 
                 try {
-
-
                     botReply = ollama::generate(model, chatPrompt);
-                    cout << "Replying with: " << botReply << endl << endl;
+                    if (botDebugMsg) { // DEBUG
+                        cout << "Replying with: " << botReply << endl << endl;
+                    }
                     toSend = "USER_MESSAGE," + username + "," + password + "," + botReply;
                     socket.send(toSend);
                 } catch (const ollama::exception &e) {

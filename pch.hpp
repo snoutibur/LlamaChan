@@ -2,6 +2,9 @@
 #define PCH_HPP
 
 #include <iostream>
+#include <fstream>
+#include <filesystem>
+#include <sstream>
 #include <string>
 
 #include "ixwebsocket/IXWebSocket.h"

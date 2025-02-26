@@ -1,27 +1,84 @@
-#include "ixwebsocket/IXWebSocket.h"
-#include "ollama.hpp"
-#include <iostream>
-
+#include "pch.hpp"
 using namespace std;
 
-int main() {
-    // ! SETTINGS ! //
-    // User //
-    const string username = "Llamachan";
-    const string password = "LlamasAreSoCuteUWU";
+// Get boolean from string
+bool strToBool(const std::string& str) {
+    string lowerStr = str;
+    transform(lowerStr.begin(), lowerStr.end(), lowerStr.begin(), ::tolower);
 
-    // Ollama //
-    const string ollamaServer = "10.0.0.242:11434";
-    const string model = "llama3.1:latest";
-    const string basePrompt = "Your name is " + username +
-                              ". You are to behave like a degenerate furry weeboo on a chat app. You're a bit of a troll, and also like reminding people you use Arch Linux btw. Despite that, you do have a loving side. Use excessive emoticons and kaomojis, ie :3, :o, :D. NO REGULAR EMOJIS. ";
+    return (lowerStr == "true" || lowerStr == "1");
+}
 
-    // BOT //
-    bool botService = true;
-    bool botDebugMsg = true;
+int main(int argc, char* argv[]) {
+    // Setting woorking dir
+    std::filesystem::path exePath = std::filesystem::canonical(argv[0]).parent_path();
+    std::filesystem::current_path(exePath);
+    std::cout << "Working directory set to: " << std::filesystem::current_path() << std::endl;
 
+    // *Load config.txt* //
+    // Config vars //
+    // User
+    string username;
+    string password;
+    // Ollama
+    string ollamaServer;
+    string model;
+    string basePrompt;
+    // Bot
+    bool botDebugMsg;
+    bool botService;
 
-    //* Vars: NO TOUCHY! *//
+    // Find file
+    ifstream file("config.txt");
+    if (!file) {
+        std::cerr << "ERR: config.txt no opening!" << std::endl;
+        return 1;
+    }
+
+    // Read file
+    string confLine;
+    while (getline(file, confLine)) {
+        // Ignore #comments
+        if (confLine.empty() || confLine[0] == '#')
+            continue;
+        istringstream iss(confLine);
+        string key, value;
+
+        // Set values set by =
+        if (std::getline(iss, key, '=') && std::getline(iss, value)) {
+            if (key == "username") { // USER VALUES
+                username = value;
+            } else if (key == "password") {
+                password = value;
+            } else if (key == "ollamaServer") { // Ollama values
+                ollamaServer = value;
+            } else if (key == "model") {
+                model = value;
+            } else if (key == "basePrompt") {
+                basePrompt = value;
+            } else if (key == "botService") { // Bot config
+                botService = strToBool(value);
+            } else if (key == "botDebugMsg") {
+                botDebugMsg = strToBool(value);
+            }
+        }
+    }
+
+    // Confirm config load
+    cout << "===== Configuration Loaded! =====" << endl;
+    cout << "User:" << endl;
+    cout << "  Username:     " << username << endl;
+    cout << "  Password:     " << password << endl;
+    cout << "Ollama:" << endl;
+    cout << "  Server:       " << ollamaServer << endl;
+    cout << "  Model:        " << model << endl;
+    cout << "  Base Prompt:  " << basePrompt << endl;
+    cout << "Bot Settings:" << endl;
+    cout << "  Debug Messages: " << (botDebugMsg ? "Enabled" : "Disabled") << endl;
+    cout << "  Service Mode:  " << (botService ? "Enabled" : "Disabled") << endl;
+    cout << "========================" << endl;
+
+    //* VAR DUMP *//
     string userInput;
     string prompt;
     string output;

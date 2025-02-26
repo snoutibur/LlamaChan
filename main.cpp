@@ -11,10 +11,14 @@ int main() {
     const string password = "LlamasAreSoCuteUWU";
 
     // Ollama //
-    const string ollamaServer = "localhost:11434";
+    const string ollamaServer = "10.0.0.242:11434";
     const string model = "llama3.1:latest";
+    const string basePrompt = "Your name is " + username +
+                              ". You are to behave like a degenerate furry weeboo on a chat app. You're a bit of a troll, and also like reminding people you use Arch Linux btw. Despite that, you do have a loving side. Use excessive emoticons and kaomojis, ie :3, :o, :D. NO REGULAR EMOJIS. ";
 
-
+    // BOT //
+    bool botService = true;
+    bool botDebugMsg = true;
 
 
     //* Vars: NO TOUCHY! *//
@@ -22,12 +26,9 @@ int main() {
     string prompt;
     string output;
     string packet;
-
-    bool botService = true;
-    bool botDebugMsg = true;
+    deque<ollama::message> conversation;
 
     cout << "hi mom" << endl;
-
     //* WEBSOCKET INIT *//
     ix::WebSocket socket;
     socket.setUrl("wss://chat.stormyyy.dev");
@@ -49,14 +50,15 @@ int main() {
 
     socket.start();
 
+
     //* OLLAMA *//
     // Init connection
     ollama::setServerURL(ollamaServer);
     ollama::setReadTimeout(240);
     ollama::setWriteTimeout(240);
-    
+    // OLLAMA BOT!
     socket.setOnMessageCallback(
-        [botService, botDebugMsg, model, password, username, &socket](const ix::WebSocketMessagePtr &msg) {
+        [botService, botDebugMsg, model, password, username, &socket, basePrompt](const ix::WebSocketMessagePtr &msg) {
             if (botService && msg->type == ix::WebSocketMessageType::Message) {
                 //* Generate responses */
                 string chatPrompt;
@@ -66,32 +68,50 @@ int main() {
                 string part;
                 vector<string> parts;
 
-                // Filter messages to only respond to only commands
                 // Split the message into user and content.
-                if (botDebugMsg) { // DEBUG
+                if (botDebugMsg) {
+                    // DEBUG
                     cout << endl << "Received message: " << msg->str << endl;
                 }
                 istringstream ss(msg->str);
-                while (getline(ss, part, ',')) {
+
+                // Split to first and 2nd comma
+                if (getline(ss, part, ',')) {
+                    parts.push_back(part);
+                } else {
+                    cout << "First token can't be read!" << endl;
+                }
+                if (getline(ss, part, ',')) {
+                    parts.push_back(part);
+                } else {
+                    cout << "Second token can't be read!" << endl;
+                }
+                // Adds the remaining parts, allowing input with commas.
+                if (getline(ss, part)) {
                     parts.push_back(part);
                 }
 
                 // Filters usernames
                 if (parts.size() > 1 && parts[1] == username) {
-                    if (botDebugMsg) { // DEBUG
-                        cout << "Ignored. From self." << endl << endl;
+                    if (botDebugMsg) {
+                        // DEBUG
+                        cout << "Ignored as it's from self." << endl << endl;
                     }
                 } else {
                     // No messages from self, get rid of the command prefix
-                    chatPrompt = parts[2];
-                    if (botDebugMsg) { // DEBUG
+                    chatPrompt = basePrompt + " User " + parts[1] + " says: " + parts[2];
+                    if (botDebugMsg) {
+                        // DEBUG
                         cout << "Prompting: " << chatPrompt << endl;
                     }
                 }
 
                 try {
                     botReply = ollama::generate(model, chatPrompt);
-                    cout << "Replying with: " << botReply << endl << endl;
+                    if (botDebugMsg) {
+                        // DEBUG
+                        cout << "Replying with: " << botReply << endl << endl;
+                    }
                     toSend = "USER_MESSAGE," + username + "," + password + "," + botReply;
                     socket.send(toSend);
                 } catch (const ollama::exception &e) {
@@ -116,17 +136,18 @@ int main() {
             // Bot settings
             cout << "Bot status: " << botService << " <> Debug messages: " << botDebugMsg << endl;
 
-            cout << "0 Disable | 1 Enable | 3 Disable debug messages | 4: Enable debug messages di\n>";
-            cin >> userInput;
-            if (userInput == "1") {
-                botService = true;
-            } else if (userInput == "0") {
-                botService = false;
-            } else if (userInput == "3") {
-                botDebugMsg = false;
-            } else if (userInput == "4") {
-                botDebugMsg = true;
-            }
+            // ! Disabled for now. Updated variables are ignored for some reason.
+            // cout << "0 Disable | 1 Enable | 3 Disable debug messages | 4: Enable debug messages di\n>";
+            // cin >> userInput;
+            // if (userInput == "1") {
+            //     botService = true;
+            // } else if (userInput == "0") {
+            //     botService = false;
+            // } else if (userInput == "3") {
+            //     botDebugMsg = false;
+            // } else if (userInput == "4") {
+            //     botDebugMsg = true;
+            // }
         } else if (userInput == "console") {
             // Ollama query w/ output sent in the chat
             while (true) {

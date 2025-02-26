@@ -68,28 +68,28 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "CMake Application.Stormllama.executor": "Run",
-    "RunOnceActivity.RadMigrateCodeStyle": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.cidr.known.project.marker": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.readMode.enableVisualFormatting": "true",
-    "RunOnceActivity.west.config.association.type.startup.service": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "cf.first.check.clang-format": "false",
-    "cidr.known.project.marker": "true",
-    "git-widget-placeholder": "main",
-    "last_opened_file_path": "/home/snoutibur/Documents/GItHub/LlamaChan",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;CMake Application.Stormllama.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.RadMigrateCodeStyle&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.west.config.association.type.startup.service&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
+    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;3-message-context&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/snoutibur/Documents/GItHub/LlamaChan&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/lib" />
@@ -97,11 +97,6 @@
   </component>
   <component name="RunManager">
     <configuration name="Stormllama" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Stormllama" TARGET_NAME="Stormllama" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Stormllama" RUN_TARGET_NAME="Stormllama">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -125,7 +120,16 @@
       <workItem from="1740522322759" duration="362000" />
       <workItem from="1740523809753" duration="650000" />
       <workItem from="1740529478497" duration="3514000" />
-      <workItem from="1740533133978" duration="4927000" />
+      <workItem from="1740533133978" duration="8342000" />
+      <workItem from="1740542529570" duration="1008000" />
+      <workItem from="1740545740960" duration="239000" />
+      <workItem from="1740546061842" duration="14000" />
+      <workItem from="1740581189207" duration="68000" />
+      <workItem from="1740582178076" duration="149000" />
+      <workItem from="1740587114945" duration="1484000" />
+      <workItem from="1740589663116" duration="604000" />
+      <workItem from="1740593968581" duration="1250000" />
+      <workItem from="1740606838450" duration="623000" />
     </task>
     <servers />
   </component>

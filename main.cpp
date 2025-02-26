@@ -1,10 +1,8 @@
 #include "ixwebsocket/IXWebSocket.h"
 #include "ollama.hpp"
-
 #include <iostream>
+
 using namespace std;
-
-
 
 int main() {
     // ! SETTINGS ! //
@@ -50,6 +48,7 @@ int main() {
     // Init connection
     ollama::setServerURL(ollamaServer);
     // Test prompt
+    // cout << ollama::generate(model, "hi!") << endl;
 
     //* Commands *//
     while (true) {
@@ -69,14 +68,20 @@ int main() {
             while (true) {
                 cout << "Ollama prompt:" << endl;
                 getline(cin, prompt);
-
                 if (prompt==":q!") {
                     break;
                 }
 
-                output = ollama::generate(model, prompt);
-                packet = "USER_MESSAGE," + username + "," + password + "," + output;
-                socket.send(packet);
+                try {
+                    output = ollama::generate(model, prompt);
+                    packet = "USER_MESSAGE," + username + "," + password + "," + output;
+                    socket.send(packet);
+                } catch (const ollama::exception& e) {
+                    cerr << "Exception type: " << typeid(e).name() << "\n";
+                    cerr << "Error: " << e.what() << std::endl;
+                } catch (...) {
+                    cerr << "Error, unknown. " << std::endl;
+                }
             }
 
         } else if (userInput == "chat") {

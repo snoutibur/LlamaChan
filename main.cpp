@@ -13,11 +13,13 @@ int main() {
     // Ollama //
     const string ollamaServer = "localhost:11434";
     const string model = "llama3.1:latest";
-    const string basePrompt = "Your name is " + username + ". You are to behave like a degenerate furry weeboo on a chat app. You're a bit of a troll. Reply accordingly, and use excessive emoticons, ie :3, :o, :D, >:C. NO EMOJIS. ";
+    const string basePrompt = "Your name is " + username +
+                              ". You are to behave like a degenerate furry weeboo on a chat app. You're a bit of a troll, and also like reminding people you use Arch Linux btw. Reply accordingly, and use excessive emoticons, ie :3, :o, :D, >:C. NO EMOJIS. ";
 
     // BOT //
     bool botService = true;
     bool botDebugMsg = true;
+
 
 
     //* Vars: NO TOUCHY! *//
@@ -25,12 +27,7 @@ int main() {
     string prompt;
     string output;
     string packet;
-
-
-
-
-
-
+    deque<ollama::message> conversation;
 
     cout << "hi mom" << endl;
     //* WEBSOCKET INIT *//
@@ -59,10 +56,14 @@ int main() {
     ollama::setServerURL(ollamaServer);
     ollama::setReadTimeout(240);
     ollama::setWriteTimeout(240);
-
+    
     // OLLAMA BOT!
     socket.setOnMessageCallback(
         [botService, botDebugMsg, model, password, username, &socket, basePrompt](const ix::WebSocketMessagePtr &msg) {
+            // Initialize context
+            ollama::response initial = ollama::generate(model, basePrompt);
+
+
             if (botService && msg->type == ix::WebSocketMessageType::Message) {
                 //* Generate responses */
                 string chatPrompt;
@@ -74,7 +75,8 @@ int main() {
 
                 // Filter messages to only respond to only commands
                 // Split the message into user and content.
-                if (botDebugMsg) { // DEBUG
+                if (botDebugMsg) {
+                    // DEBUG
                     cout << endl << "Received message: " << msg->str << endl;
                 }
 
@@ -85,18 +87,22 @@ int main() {
 
                 // Filters usernames
                 if (parts.size() > 1 && parts[1] == username) {
-                    if (botDebugMsg) { // DEBUG
+                    if (botDebugMsg) {
+                        // DEBUG
                         cout << "Ignored as it's from self." << endl << endl;
                     }
                 } else {
                     // No messages from self, get rid of the command prefix
                     chatPrompt = basePrompt + " User " + parts[1] + " says: " + parts[2];
-                    if (botDebugMsg) { // DEBUG
+                    if (botDebugMsg) {
+                        // DEBUG
                         cout << "Prompting: " << chatPrompt << endl;
                     }
                 }
 
                 try {
+
+
                     botReply = ollama::generate(model, chatPrompt);
                     cout << "Replying with: " << botReply << endl << endl;
                     toSend = "USER_MESSAGE," + username + "," + password + "," + botReply;
@@ -135,7 +141,6 @@ int main() {
             // } else if (userInput == "4") {
             //     botDebugMsg = true;
             // }
-
         } else if (userInput == "console") {
             // Ollama query w/ output sent in the chat
             while (true) {

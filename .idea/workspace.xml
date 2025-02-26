@@ -80,7 +80,7 @@
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
-    "git-widget-placeholder": "Adding-context",
+    "git-widget-placeholder": "3-message-context",
     "last_opened_file_path": "/home/snoutibur/Documents/GItHub/LlamaChan",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -125,7 +125,7 @@
       <workItem from="1740522322759" duration="362000" />
       <workItem from="1740523809753" duration="650000" />
       <workItem from="1740529478497" duration="3514000" />
-      <workItem from="1740533133978" duration="6556000" />
+      <workItem from="1740533133978" duration="8342000" />
     </task>
     <servers />
   </component>

@@ -72,10 +72,10 @@ int main(int argc, char* argv[]) {
     cout << "Ollama:" << endl;
     cout << "  Server:       " << ollamaServer << endl;
     cout << "  Model:        " << model << endl;
-    cout << "  Base Prompt:  " << basePrompt << endl;
+    cout << "  Prompt:  " << basePrompt << endl;
     cout << "Bot Settings:" << endl;
     cout << "  Debug Messages: " << (botDebugMsg ? "Enabled" : "Disabled") << endl;
-    cout << "  Service Mode:  " << (botService ? "Enabled" : "Disabled") << endl;
+    cout << "  Server:  " << (botService ? "Enabled" : "Disabled") << endl;
     cout << "========================" << endl;
 
     //* VAR DUMP *//

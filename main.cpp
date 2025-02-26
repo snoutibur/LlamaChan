@@ -54,11 +54,6 @@ int main() {
     socket.setOnMessageCallback(
         [botService, botDebugMsg, model, password, username, &socket](const ix::WebSocketMessagePtr &msg) {
             if (botService && msg->type == ix::WebSocketMessageType::Message) {
-                // Toggles
-                if (botDebugMsg) {
-                    cout << "Received message: " << msg->str << endl;
-                }
-
                 //* Generate responses */
                 string chatPrompt;
                 string botReply;
@@ -69,6 +64,9 @@ int main() {
 
                 // Filter messages to only respond to only commands
                 // Split the message into user and content.
+                if (botDebugMsg) { // DEBUG
+                    cout << endl << "Received message: " << msg->str << endl;
+                }
                 istringstream ss(msg->str);
                 while (getline(ss, part, ',')) {
                     parts.push_back(part);
@@ -76,18 +74,20 @@ int main() {
 
                 // Filters usernames
                 if (parts.size() > 1 && parts[1] == username) {
-                    if (botDebugMsg) {
+                    if (botDebugMsg) { // DEBUG
                         cout << "Ignored. From self." << endl << endl;
                     }
                 } else {
                     // No messages from self, get rid of the command prefix
-                    chatPrompt = parts[0];
+                    chatPrompt = parts[2];
+                    if (botDebugMsg) { // DEBUG
+                        cout << "Prompting: " << chatPrompt << endl;
+                    }
                 }
-
 
                 try {
                     botReply = ollama::generate(model, chatPrompt);
-                    cout << "Replying with: " << botReply << endl;
+                    cout << "Replying with: " << botReply << endl << endl;
                     toSend = "USER_MESSAGE," + username + "," + password + "," + botReply;
                     socket.send(toSend);
                 } catch (const ollama::exception &e) {

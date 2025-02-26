@@ -70,7 +70,7 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "CMake Application.Stormllama.executor": "Debug",
+    "CMake Application.Stormllama.executor": "Run",
     "RunOnceActivity.RadMigrateCodeStyle": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.cidr.known.project.marker": "true",
@@ -125,7 +125,7 @@
       <workItem from="1740522322759" duration="362000" />
       <workItem from="1740523809753" duration="650000" />
       <workItem from="1740529478497" duration="3514000" />
-      <workItem from="1740533133978" duration="4314000" />
+      <workItem from="1740533133978" duration="4927000" />
     </task>
     <servers />
   </component>
@@ -136,16 +136,5 @@
     <isAutomaticCheckingOnLaunch value="false" />
     <isAutomaticFoundErrors value="true" />
     <isAutomaticReloadCMake value="true" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/main.cpp</url>
-          <line>82</line>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>

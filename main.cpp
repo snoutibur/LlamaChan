@@ -9,11 +9,13 @@ int main() {
     // User //
     const string username = "Llamachan";
     const string password = "LlamasAreSoCuteUWU";
+
     // Ollama //
     const string ollamaServer = "localhost:11434";
-    const string model = "tinydolphin";
-    ollama::setReadTimeout(120);
-    ollama::setWriteTimeout(120);
+    const string model = "llama3.1:latest";
+
+
+
 
     //* Vars: NO TOUCHY! *//
     string userInput;
@@ -50,7 +52,9 @@ int main() {
     //* OLLAMA *//
     // Init connection
     ollama::setServerURL(ollamaServer);
-
+    ollama::setReadTimeout(240);
+    ollama::setWriteTimeout(240);
+    
     socket.setOnMessageCallback(
         [botService, botDebugMsg, model, password, username, &socket](const ix::WebSocketMessagePtr &msg) {
             if (botService && msg->type == ix::WebSocketMessageType::Message) {

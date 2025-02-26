@@ -4,81 +4,97 @@
 #include <iostream>
 using namespace std;
 
-int main() {
-    cout << "hi mom" << endl;
 
+
+int main() {
     // ! SETTINGS ! //
-    // User
+    // User //
     const string username = "Llamachan";
     const string password = "LlamasAreSoCuteUWU";
-    // Ollama
-    const string ollamaServer = "173.190.231.120:11434";
+    // Ollama //
+    const string ollamaServer = "localhost:11434";
     const string model = "llama3.2:1b";
+    ollama::setReadTimeout(120);
+    ollama::setWriteTimeout(120);
 
-
-    // Var dump
+    //* Vars: NO TOUCHY! *//
+    string userInput;
     string prompt;
+    string output;
+    string packet;
 
-    // Connects to websocket server
+    cout << "hi mom" << endl;
+
+    //* WEBSOCKET INIT *//
     ix::WebSocket socket;
     socket.setUrl("wss://chat.stormyyy.dev");
 
     // Login as user
-    socket.setOnMessageCallback([&socket, username, password](const ix::WebSocketMessagePtr& msg) {
+    socket.setOnMessageCallback([&socket, username, password](const ix::WebSocketMessagePtr &msg) {
         if (msg->type == ix::WebSocketMessageType::Open) {
-            std::cout << "Connection with server established!" << std::endl;
+            cout << "Connection with server established!" << endl;
 
             // Attempting login!!
             string loginData = "LOGIN," + username + "," + password + ",NULL";
             socket.send(loginData);
-            std::cout << "LOGIN AS:" << loginData << std::endl;
-        }
-        else if (msg->type == ix::WebSocketMessageType::Error) {
-            std::cerr << "ERR: " << msg->errorInfo.reason << std::endl;
+            cout << "LOGIN AS:" << loginData << endl;
+            cout << endl << endl;
+        } else if (msg->type == ix::WebSocketMessageType::Error) {
+            cerr << "ERR: " << msg->errorInfo.reason << endl;
         }
     });
 
     socket.start();
 
-
     //* OLLAMA *//
     // Init connection
     ollama::setServerURL(ollamaServer);
     // Test prompt
-    cout << ollama::generate(model, "Hi!") << endl;
 
-    // Command system
-    string userInput;
-
-    // Commands
+    //* Commands *//
     while (true) {
-        cout << ">";
+        cout << "command >";
         getline(cin, userInput);
 
         // q! to exit program
-        if (userInput == "q!") {
+        if (userInput == "quit") {
             break;
-        } else if (userInput == "olb") {
+        } else if (userInput == "bot") {
+            // Enables the command for ollama chat
             cout << "Serving Ollama model as bot";
             // TODO: Implement bot
-        } else if (userInput == "olc") {
 
+        } else if (userInput == "console") {
+            // Ollama query w/ output sent in the chat
+            while (true) {
+                cout << "Ollama prompt:" << endl;
+                getline(cin, prompt);
+
+                if (prompt==":q!") {
+                    break;
+                }
+
+                output = ollama::generate(model, prompt);
+                packet = "USER_MESSAGE," + username + "," + password + "," + output;
+                socket.send(packet);
+            }
+
+        } else if (userInput == "chat") {
+            // Manually send messages into the chat //
+            cout << "Sending messages through console" << endl << endl;
+            while (true) {
+                cout << ">";
+                getline(cin, userInput);
+                if (userInput == ":q!") {
+                    break;
+                }
+
+                packet = "USER_MESSAGE," + username + "," + password + "," + userInput;
+                cout << packet << "->" << endl;
+                socket.send(packet);
+            }
         }
     }
-
-
-    // string output;
-    // string ollamaOut;
-    // while (true) {
-    //
-    //
-    //     ollamaOut = ollama::generate(model, prompt);
-    //     output = "USER_MESSAGE," + username + "," + password + "," + ollamaOut;
-    //     cout << output << " >>" << endl << endl;
-    //     socket.send(output);
-    //
-    //
-    // }
 
     cout << "Quitting process..." << endl;
     socket.stop();

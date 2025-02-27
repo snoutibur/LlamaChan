@@ -1,7 +1,19 @@
 #include "pch.hpp"
 using namespace std;
 
-// Get boolean from string
+//* Config vars *//
+// User
+string username;
+string password;
+// Ollama
+string ollamaServer;
+string model;
+string basePrompt;
+// Bot
+bool botDebugMsg;
+bool botService;
+
+//* Get boolean from string *//
 bool strToBool(const std::string& str) {
     string lowerStr = str;
     transform(lowerStr.begin(), lowerStr.end(), lowerStr.begin(), ::tolower);
@@ -9,30 +21,12 @@ bool strToBool(const std::string& str) {
     return (lowerStr == "true" || lowerStr == "1");
 }
 
-int main(int argc, char* argv[]) {
-    //* Setting workspace dir *//
-    std::filesystem::path exePath = std::filesystem::canonical(argv[0]).parent_path();
-    std::filesystem::current_path(exePath);
-    std::cout << "Working directory set to: " << std::filesystem::current_path() << std::endl;
-
-    // *Load config.txt* //
-    // Config vars //
-    // User
-    string username;
-    string password;
-    // Ollama
-    string ollamaServer;
-    string model;
-    string basePrompt;
-    // Bot
-    bool botDebugMsg;
-    bool botService;
-
+// *Load config.txt* //
+void loadConfig() {
     // Find file
     ifstream file("config.txt");
     if (!file) {
         std::cerr << "ERR: config.txt no opening!" << std::endl;
-        return 1;
     }
 
     // Read file
@@ -77,6 +71,15 @@ int main(int argc, char* argv[]) {
     cout << "  Debug Messages: " << (botDebugMsg ? "Enabled" : "Disabled") << endl;
     cout << "  Server:  " << (botService ? "Enabled" : "Disabled") << endl;
     cout << "========================" << endl;
+}
+
+int main(int argc, char* argv[]) {
+    //* Setting workspace dir *//
+    std::filesystem::path exePath = std::filesystem::canonical(argv[0]).parent_path();
+    std::filesystem::current_path(exePath);
+    std::cout << "Working directory set to: " << std::filesystem::current_path() << std::endl;
+
+    loadConfig();
 
     //* VAR DUMP *//
     string userInput;
@@ -91,7 +94,7 @@ int main(int argc, char* argv[]) {
     socket.setUrl("wss://chat.stormyyy.dev");
 
     // Login as user
-    socket.setOnMessageCallback([&socket, username, password](const ix::WebSocketMessagePtr &msg) {
+    socket.setOnMessageCallback([&socket](const ix::WebSocketMessagePtr &msg) {
         if (msg->type == ix::WebSocketMessageType::Open) {
             cout << "Connection with server established!" << endl;
 
@@ -115,7 +118,7 @@ int main(int argc, char* argv[]) {
     ollama::setWriteTimeout(240);
     // OLLAMA BOT!
     socket.setOnMessageCallback(
-        [botService, botDebugMsg, model, password, username, &socket, basePrompt](const ix::WebSocketMessagePtr &msg) {
+        [&socket](const ix::WebSocketMessagePtr &msg) {
             if (botService && msg->type == ix::WebSocketMessageType::Message) {
                 //* Generate responses */
                 string chatPrompt;
@@ -192,19 +195,6 @@ int main(int argc, char* argv[]) {
         } else if (userInput == "bot") {
             // Bot settings
             cout << "Bot status: " << botService << " <> Debug messages: " << botDebugMsg << endl;
-
-            // Live config no worky!
-            // cout << "0 Disable | 1 Enable | 3 Disable debug messages | 4: Enable debug messages di\n>";
-            // cin >> userInput;
-            // if (userInput == "1") {
-            //     botService = true;
-            // } else if (userInput == "0") {
-            //     botService = false;
-            // } else if (userInput == "3") {
-            //     botDebugMsg = false;
-            // } else if (userInput == "4") {
-            //     botDebugMsg = true;
-            // }
 
         } else if (userInput == "console") {
             // Ollama query w/ output sent in the chat

@@ -230,6 +230,9 @@ int main(int argc, char* argv[]) {
                 cout << packet << "->" << endl;
                 socket.send(packet);
             }
+        } else if (userInput == "re") {
+            cout << "Reloading config.txt" << endl << endl;
+            loadConfig();
         }
     }
 

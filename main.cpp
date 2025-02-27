@@ -14,7 +14,7 @@ bool botDebugMsg;
 bool botService;
 
 //* Get boolean from string *//
-bool strToBool(const std::string& str) {
+bool strToBool(const std::string &str) {
     string lowerStr = str;
     transform(lowerStr.begin(), lowerStr.end(), lowerStr.begin(), ::tolower);
 
@@ -40,17 +40,20 @@ void loadConfig() {
 
         // Set values set by =
         if (std::getline(iss, key, '=') && std::getline(iss, value)) {
-            if (key == "username") { // USER VALUES
+            if (key == "username") {
+                // USER VALUES
                 username = value;
             } else if (key == "password") {
                 password = value;
-            } else if (key == "ollamaServer") { // Ollama values
+            } else if (key == "ollamaServer") {
+                // Ollama values
                 ollamaServer = value;
             } else if (key == "model") {
                 model = value;
             } else if (key == "basePrompt") {
                 basePrompt = value;
-            } else if (key == "botService") { // Bot config
+            } else if (key == "botService") {
+                // Bot config
                 botService = strToBool(value);
             } else if (key == "botDebugMsg") {
                 botDebugMsg = strToBool(value);
@@ -73,7 +76,32 @@ void loadConfig() {
     cout << "========================" << endl;
 }
 
-int main(int argc, char* argv[]) {
+// Split the message into user and content.
+vector<string> parseMsg(auto &in) {
+    string part;
+    vector<string> parts;
+
+    istringstream ss(in);
+    // Split to first and 2nd comma
+    if (getline(ss, part, ',')) {
+        parts.push_back(part);
+    } else {
+        cout << "First token can't be read!" << endl;
+    }
+    if (getline(ss, part, ',')) {
+        parts.push_back(part);
+    } else {
+        cout << "Second token can't be read!" << endl;
+    }
+    // Adds the remaining parts, allowing input with commas.
+    if (getline(ss, part)) {
+        parts.push_back(part);
+    }
+
+    return parts;
+}
+
+int main(int argc, char *argv[]) {
     //* Setting workspace dir *//
     std::filesystem::path exePath = std::filesystem::canonical(argv[0]).parent_path();
     std::filesystem::current_path(exePath);
@@ -125,41 +153,22 @@ int main(int argc, char* argv[]) {
                 string botReply;
                 string toSend;
 
-                string part;
-                vector<string> parts;
-
-                // Split the message into user and content.
+                // Split msg for prompting
                 if (botDebugMsg) {
                     // DEBUG
                     cout << endl << "Received message: " << msg->str << endl;
                 }
-                istringstream ss(msg->str);
-
-                // Split to first and 2nd comma
-                if (getline(ss, part, ',')) {
-                    parts.push_back(part);
-                } else {
-                    cout << "First token can't be read!" << endl;
-                }
-                if (getline(ss, part, ',')) {
-                    parts.push_back(part);
-                } else {
-                    cout << "Second token can't be read!" << endl;
-                }
-                // Adds the remaining parts, allowing input with commas.
-                if (getline(ss, part)) {
-                    parts.push_back(part);
-                }
+                vector<string> parsdMsg = parseMsg(msg->str);
 
                 // Filters usernames
-                if (parts.size() > 1 && parts[1] == username) {
+                if (parsdMsg.size() > 1 && parsdMsg[1] == username) {
                     if (botDebugMsg) {
                         // DEBUG
                         cout << "Ignored as it's from self." << endl << endl;
                     }
                 } else {
                     // No messages from self, get rid of the command prefix
-                    chatPrompt = basePrompt + " User " + parts[1] + " says: " + parts[2];
+                    chatPrompt = basePrompt + " User " + parsdMsg[1] + " says: " + parsdMsg[2];
                     if (botDebugMsg) {
                         // DEBUG
                         cout << "Prompting: " << chatPrompt << endl;
@@ -195,7 +204,6 @@ int main(int argc, char* argv[]) {
         } else if (userInput == "bot") {
             // Bot settings
             cout << "Bot status: " << botService << " <> Debug messages: " << botDebugMsg << endl;
-
         } else if (userInput == "console") {
             // Ollama query w/ output sent in the chat
             while (true) {
